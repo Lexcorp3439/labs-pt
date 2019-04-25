@@ -37,9 +37,8 @@
         </dependency>
         <dependency>
             <groupId>org.knowm.xchart</groupId>
-            <artifactId>xchart-parent</artifactId>
+            <artifactId>xchart</artifactId>
             <version>3.5.4</version>
-            <type>pom</type>
         </dependency>
     </dependencies>
 
