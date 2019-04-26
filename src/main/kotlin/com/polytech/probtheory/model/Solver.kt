@@ -3,6 +3,7 @@ package com.polytech.probtheory.model
 import java.io.PrintWriter
 import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
+import org.knowm.xchart.style.Styler
 
 
 abstract class Solver(
@@ -67,6 +68,7 @@ abstract class Solver(
     open fun drawHypo(matrix: List<List<Double>>) {
         val chart =
             XYChartBuilder().width(800).height(600)
+                .theme(Styler.ChartTheme.Matlab)
                 .title(javaClass.simpleName)
                 .xAxisTitle("exp").yAxisTitle("p")
                 .build()

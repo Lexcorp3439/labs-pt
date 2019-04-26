@@ -18,20 +18,6 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
         val allHypos = MutableList(hypo.size) { mutableListOf<Double>()}
         allHypos.putHypos(hypo)
 
-        for ((i, exp) in exps.withIndex()) {
-            if (set.add((exp as Letter).e.second)) {
-                println("$i")
-                changeAllPAH(exp)
-                changePA()
-                for (h in hypo) {
-                    h.changeP(pA)
-                }
-                if (i != property.stopDraw) {
-                    allHypos.putHypos(hypo)
-                }
-//                sout(i, Type.FILE)
-            }
-        }
 
         out.close()
         return allHypos    }
