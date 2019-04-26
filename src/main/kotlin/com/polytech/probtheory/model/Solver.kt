@@ -10,27 +10,25 @@ abstract class Solver(
     val property: Property = Property("output.txt")
 ) {
 
-    private val out = PrintWriter(property.fileName)
+    val out = PrintWriter(property.fileName)
     var pA = 0.0
 
     abstract fun run()
 
-    fun countPost(): List<List<Double>> {
+    open fun countPost(): List<List<Double>> {
 //        sout(-1, Type.CONCOLE)
-//        sout(-1, Type.FILE)
+        sout(-1, Type.FILE)
         val allHypos = MutableList(hypo.size) { mutableListOf<Double>()}
         allHypos.putHypos(hypo)
 
         for ((i, exp) in exps.withIndex()) {
             println("$i")
-            if (i == 100 || i == 500 || i == 1000) {
-                println(hypo.filter { it.p != 0.0 }.size)
-            }
             changeAllPAH(exp)
             changePA()
             for (h in hypo) {
                 h.changeP(pA)
             }
+
             allHypos.putHypos(hypo)
             sout(i, Type.FILE)
         }
@@ -63,7 +61,6 @@ abstract class Solver(
         when (type) {
             Type.FILE -> out.write(bulid.toString())
             Type.CONCOLE -> println(bulid.toString())
-
         }
     }
 
@@ -88,7 +85,6 @@ abstract class Solver(
 
         for ((i, hypos) in matrix.withIndex()) {
             val y = hypos.subList(0, stop) //.getP()
-            println(y)
             chart.addSeries("hypo$i", x, y)
         }
 

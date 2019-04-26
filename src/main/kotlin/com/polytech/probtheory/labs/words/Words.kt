@@ -13,18 +13,19 @@ class Words : SolveBuilder {
     val words = mutableListOf<Word>()
     val hypo = mutableListOf<Hypothesis>()
 
-    val upCase = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
-    val lowCase = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
-    val voiced = "бвгджзйлмнр"
-    val deaf = "кпстфхцш"
-    val dividing = "ьъ"
-    val vowels = "оиаыюяэёуе"
-    val consonants = "бвгджзйклмнпрстфхцчшщ"
+    val upCase = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"     // Заглавные
+    val lowCase = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"    // Строчные
+    val voiced = "бвгджзйлмнр"                           // Звонкие
+    val deaf = "кпстфхцш"                                // Глухие
+    val dividing = "ьъ"                                  // Разделительные
+    val vowels = "оиаыюяэёуе"                            // Гласные
+    val consonants = "бвгджзйклмнпрстфхцчшщ"             // Соглласные
 
-    val out = PrintWriter("outout")
+    val out = PrintWriter("outout.txt")
 
     override fun read() {
         val scn = Scanner(this::class.java.getResourceAsStream("/words/task_1_words.txt"))
+
         readFiles()
         readExp(scn)
 
@@ -44,7 +45,7 @@ class Words : SolveBuilder {
         val nExp = 10000
         while (scn.hasNextLine()) {
             val line = scn.nextLine().split(" ")
-            val place = readPlace(line[1])
+            val place = readPlace(line[2])
             val chars = readInfo(line)
             list.add(Letter(place to chars))
         }
@@ -58,33 +59,36 @@ class Words : SolveBuilder {
         return -1
     }
 
-    private fun readInfo(line: List<String>): CharSequence {
-        var abs = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
-        for (i in 2 until line.size) {
-            abs = when (line[i]) {
-                "заглавная" -> deleteBy(abs, upCase) as String
-                "строчная" -> deleteBy(abs, lowCase) as String
-                "гласная" -> deleteBy(abs, vowels) as String
-                "согласная" -> deleteBy(abs, consonants) as String
-                "глухая" -> deleteBy(abs, deaf) as String
-                "звонкая" -> deleteBy(abs, voiced) as String
-                "разделительная" -> deleteBy(abs, dividing) as String
-                else -> line[i]
+    private fun readInfo(line: List<String>): CharArray {
+        var abs = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".toCharArray()
+        if (line.size == 3) {
+            abs = line.last().replace("\"", "").toCharArray()
+        } else {
+            for (i in 3 until line.size) {
+                abs = when (line[i]) {
+                    "заглавная" -> deleteBy(abs, upCase)
+                    "строчная" -> deleteBy(abs, lowCase)
+                    "гласная" -> deleteBy(abs, vowels)
+                    "согласная" -> deleteBy(abs, consonants)
+                    "глухая" -> deleteBy(abs, deaf)
+                    "звонкая" -> deleteBy(abs, voiced)
+                    "разделительная" -> deleteBy(abs, dividing)
+                    else -> line[i].toCharArray()
+                }
             }
         }
-        out.write("$abs  \n")
-
+        out.write("${Arrays.toString(abs)}  \n")
         return abs
     }
 
-    private fun deleteBy(cur: CharSequence, del: CharSequence): CharSequence {
+    private fun deleteBy(cur: CharArray, del: CharSequence): CharArray {
         val res = StringBuilder()
         for (c in cur) {
             if (c in del) {
                 res.append(c)
             }
         }
-        return res.toString()
+        return res.toString().toCharArray()
     }
 
     fun readFiles() {
@@ -105,7 +109,7 @@ class Words : SolveBuilder {
 
     fun readFile(scanner: FastScanner, rN: Int) {
         for (i in 0 until rN) {
-            words.add(Word(scanner.next()))
+            words.add(Word(scanner.next().toCharArray()))
         }
     }
 }
