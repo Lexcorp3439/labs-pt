@@ -15,15 +15,15 @@ class BallBoxes : SolveBuilder {
     var nExp = 10000
     var list = mutableListOf<Experiment>()
     var boxes = mutableListOf<Box>()
+    val hypo = mutableListOf<Hypothesis>()
 
     override fun read() {
-        val file = File("L:\\IdeaProjects\\labs-pt\\src\\main\\resources\\ballboxes\\task_1_ball_boxes.txt")
-        val scanner = FastScanner(file)
+        val j = this::class.java
+        val scanner = FastScanner(j.getResourceAsStream("/ballboxes\\\\task_1_ball_boxes.txt"))
         parseBox(scanner)
         pardeExp(scanner)    }
 
     override fun buildHypo(): List<Hypothesis> {
-        val hypo = mutableListOf<Hypothesis>()
         val p = 1.0 * (1 - p_change_box) / n_boxes
         println(p)
         for (box in boxes) {

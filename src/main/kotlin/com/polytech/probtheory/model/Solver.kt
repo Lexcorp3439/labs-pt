@@ -1,49 +1,42 @@
 package com.polytech.probtheory.model
 
 import java.io.PrintWriter
-import javafx.scene.chart.XYChart
-import org.knowm.xchart.QuickChart
 import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 
 
+abstract class Solver(
+    val hypo: List<Hypothesis>, val exps: List<Experiment>,
+    val property: Property = Property("output.txt")
+) {
 
-
-abstract class Solver(val hypo: List<Hypothesis>, val exps: List<Experiment>) {
-    open lateinit var out: PrintWriter
-    open var pA = 0.0
+    private val out = PrintWriter(property.fileName)
+    var pA = 0.0
 
     abstract fun run()
 
-    fun countPost() {
-        out = PrintWriter("output_white.txt")
-        sout(-1, Type.CONCOLE)
-        sout(-1, Type.FILE)
-        val listI = mutableListOf<Int>()
-        val hypo1 = mutableListOf<Double>()
-        val hypo2 = mutableListOf<Double>()
-        val hypo3 = mutableListOf<Double>()
-        val hypo4 = mutableListOf<Double>()
-        val hypo5 = mutableListOf<Double>()
-
+    fun countPost(): List<List<Double>> {
+//        sout(-1, Type.CONCOLE)
+//        sout(-1, Type.FILE)
+        val allHypos = MutableList(hypo.size) { mutableListOf<Double>()}
+        allHypos.putHypos(hypo)
 
         for ((i, exp) in exps.withIndex()) {
-            listI.add(i)
-            hypo1.add(hypo[0].p)
-            hypo2.add(hypo[1].p)
-            hypo3.add(hypo[2].p)
-            hypo4.add(hypo[3].p)
-            hypo5.add(hypo[4].p)
+            println("$i")
+            if (i == 100 || i == 500 || i == 1000) {
+                println(hypo.filter { it.p != 0.0 }.size)
+            }
             changeAllPAH(exp)
             changePA()
             for (h in hypo) {
                 h.changeP(pA)
             }
+            allHypos.putHypos(hypo)
             sout(i, Type.FILE)
         }
 
-        xchart(listI, hypo1, hypo2, hypo3, hypo4, hypo5)
         out.close()
+        return allHypos
     }
 
     open fun changePA() {
@@ -59,7 +52,7 @@ abstract class Solver(val hypo: List<Hypothesis>, val exps: List<Experiment>) {
         }
     }
 
-    fun sout(i : Int, type: Type) {
+    fun sout(i: Int, type: Type) {
         val bulid = StringBuilder()
         bulid.append("$i   \n  ")
         for (h in hypo) {
@@ -74,8 +67,40 @@ abstract class Solver(val hypo: List<Hypothesis>, val exps: List<Experiment>) {
         }
     }
 
-    fun xchart(x: List<Int>, vararg y: List<Double>) {
-        val chart = XYChartBuilder().width(800).height(600).title(javaClass.simpleName).xAxisTitle("exp").yAxisTitle("p").build()
+    open fun drawHypo(matrix: List<List<Double>>) {
+        val chart =
+            XYChartBuilder().width(800).height(600)
+                .title(javaClass.simpleName)
+                .xAxisTitle("exp").yAxisTitle("p")
+                .build()
+
+        val x = mutableListOf<Int>()
+
+        val stop = if (property.stopDraw > matrix.first().size) {
+            matrix.first().size
+        } else {
+            property.stopDraw
+        }
+
+        for (i in 0 until stop) {
+            x.add(i)
+        }
+
+        for ((i, hypos) in matrix.withIndex()) {
+            val y = hypos.subList(0, stop) //.getP()
+            println(y)
+            chart.addSeries("hypo$i", x, y)
+        }
+
+        SwingWrapper(chart).displayChart()
+    }
+
+    fun xchartExample(x: List<Int>, vararg y: List<Double>) {
+        val chart =
+            XYChartBuilder().width(800).height(600)
+                .title(javaClass.simpleName)
+                .xAxisTitle("exp").yAxisTitle("p")
+                .build()
 
         // Create Chart
         chart.addSeries("hypo1", x, y[0])
@@ -87,7 +112,24 @@ abstract class Solver(val hypo: List<Hypothesis>, val exps: List<Experiment>) {
         SwingWrapper(chart).displayChart()
     }
 
-    enum class Type{
+    enum class Type {
         FILE, CONCOLE
+    }
+
+//    Higher order functions
+
+    fun MutableList<MutableList<Double>>.putHypos(hypos: List<Hypothesis>) {
+        for ((i, h) in hypos.withIndex()) {
+            this[i].add(h.p)
+        }
+//        this.add(hypos)
+    }
+
+    fun List<Hypothesis>.getP(): List<Double> {
+        val list = mutableListOf<Double>()
+        for (h in this) {
+            list.add(h.p)
+        }
+        return list
     }
 }
