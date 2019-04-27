@@ -31,7 +31,7 @@ class Hypo(p: Double,info: Info): Hypothesis(p, info) {
             }
         }
         val size = exp.list.size
-        pAH = mul / Math.pow(box.total.toDouble(), exp.list.size.toDouble())           //( (size) * (size - 1) * (size - 2) )
+        pAH = mul / ( (size) * (size - 1) * (size - 2) )// Math.pow(box.total.toDouble(), exp.list.size.toDouble())           //
     }
 
     override fun toString(): String {

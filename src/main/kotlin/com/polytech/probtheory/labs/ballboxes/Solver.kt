@@ -90,8 +90,11 @@ class Solver(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property)
         psExp[BoxExp.Color.GREEN] = countG.toDouble() / (exps.size * 3)
         psExp[BoxExp.Color.BLUE] = countBl.toDouble() / (exps.size * 3)
 
+        // 2.b
         printT(psTeor)
         println(psExp.toString())
+
+        // 2.c
         drawExp(drawer)
 
     }
