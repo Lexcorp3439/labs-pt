@@ -7,7 +7,7 @@ import org.knowm.xchart.style.Styler
 
 
 abstract class Solver(
-    val hypo: List<Hypothesis>, val exps: List<Experiment>,
+    var hypo: List<Hypothesis>, val exps: List<Experiment>,
     val property: Property = Property("output.txt")
 ) {
 
@@ -17,9 +17,8 @@ abstract class Solver(
     abstract fun run()
 
     open fun countPost(): List<List<Double>> {
-//        sout(-1, Type.CONCOLE)
         sout(-1, Type.FILE)
-        val allHypos = MutableList(hypo.size) { mutableListOf<Double>()}
+        val allHypos = MutableList(hypo.size) { mutableListOf<Double>() }
         allHypos.putHypos(hypo)
 
         for ((i, exp) in exps.withIndex()) {
@@ -36,6 +35,38 @@ abstract class Solver(
 
         out.close()
         return allHypos
+    }
+
+    open fun countById(id: Int): List<Double> {
+        val hypoId = mutableListOf<Double>()
+        for (exp in exps) {
+            changeAllPAH(exp)
+            changePA()
+            for (h in hypo) {
+                h.changeP(pA)
+            }
+            hypoId.add(hypo[id].p)
+        }
+        return hypoId
+    }
+
+    var n = 0
+
+    open fun countNext(): List<Double> {
+        val nextExp = exps[n]
+        val pList = mutableListOf<Double>()
+        changeAllPAH(nextExp)
+        changePA()
+        for (h in hypo) {
+            h.changeP(pA)
+            pList.add(h.p)
+        }
+        n++
+        return pList
+    }
+
+    fun reset() {
+        n = 0
     }
 
     open fun changePA() {
@@ -65,6 +96,53 @@ abstract class Solver(
         }
     }
 
+    fun draw(x: List<Int>, y: List<Number>, title: String, name: String = "f(x)") {
+        val chart =
+            XYChartBuilder().width(800).height(600)
+                .theme(Styler.ChartTheme.Matlab)
+                .title(title)
+                .xAxisTitle("exp").yAxisTitle("p")
+                .build()
+
+        chart.addSeries(name, x, y)
+        SwingWrapper(chart).displayChart()
+    }
+
+    fun draw(y: List<Number>, size: Int, title: String, name: String = "f(x)") {
+        val x = MutableList(size) { index -> index }
+        var yNew: List<Number> = y
+        if (y.size != size) {
+            yNew = y.subList(0, size)
+        }
+        draw(x, yNew, title, name)
+    }
+
+    open fun drawAll(x: List<Int>, ys: List<List<Number>>, size: Int, title: String, name: String = "f(x)") {
+        val chart =
+            XYChartBuilder().width(800).height(600)
+                .theme(Styler.ChartTheme.Matlab)
+                .title(title)
+                .xAxisTitle("exp").yAxisTitle("p")
+                .build()
+
+        var xNew = x
+        if (x.size != size) {
+            xNew = x.subList(0, size)
+        }
+
+        for ((i, y) in ys.withIndex()) {
+            val yNew = y.subList(0, size) //.getP()
+            chart.addSeries("hypo$i", xNew, yNew)
+        }
+
+        SwingWrapper(chart).displayChart()
+    }
+
+    open fun drawAll(ys: List<List<Number>>, size: Int, title: String, name: String = "f(x)") {
+        val x = MutableList(size) { index -> index }
+        drawAll(x, ys, size, title, name)
+    }
+
     open fun drawHypo(matrix: List<List<Double>>) {
         val chart =
             XYChartBuilder().width(800).height(600)
@@ -73,39 +151,18 @@ abstract class Solver(
                 .xAxisTitle("exp").yAxisTitle("p")
                 .build()
 
-        val x = mutableListOf<Int>()
-
         val stop = if (property.stopDraw > matrix.first().size) {
             matrix.first().size
         } else {
             property.stopDraw
         }
 
-        for (i in 0 until stop) {
-            x.add(i)
-        }
+        val x = MutableList(stop) { index -> index }
 
         for ((i, hypos) in matrix.withIndex()) {
             val y = hypos.subList(0, stop) //.getP()
             chart.addSeries("hypo$i", x, y)
         }
-
-        SwingWrapper(chart).displayChart()
-    }
-
-    fun xchartExample(x: List<Int>, vararg y: List<Double>) {
-        val chart =
-            XYChartBuilder().width(800).height(600)
-                .title(javaClass.simpleName)
-                .xAxisTitle("exp").yAxisTitle("p")
-                .build()
-
-        // Create Chart
-        chart.addSeries("hypo1", x, y[0])
-        chart.addSeries("hypo2", x, y[1])
-        chart.addSeries("hypo3", x, y[2])
-        chart.addSeries("hypo4", x, y[3])
-        chart.addSeries("hypo5", x, y[4])
 
         SwingWrapper(chart).displayChart()
     }
@@ -120,7 +177,6 @@ abstract class Solver(
         for ((i, h) in hypos.withIndex()) {
             this[i].add(h.p)
         }
-//        this.add(hypos)
     }
 
     fun List<Hypothesis>.getP(): List<Double> {

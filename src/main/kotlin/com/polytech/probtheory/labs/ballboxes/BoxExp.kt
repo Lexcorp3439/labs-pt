@@ -5,7 +5,7 @@ import com.polytech.probtheory.model.Experiment
 class BoxExp(): Experiment {
     var list = mutableListOf<Color>()
     enum class Color {
-        RED, WHITE, BLACK, GREEN, BLUE, YELLOW
+        RED, WHITE, BLACK, GREEN, BLUE, YELLOW;
     }
 
     override fun toString(): String {

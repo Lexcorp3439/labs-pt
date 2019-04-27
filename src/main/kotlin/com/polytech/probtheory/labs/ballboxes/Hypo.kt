@@ -30,7 +30,8 @@ class Hypo(p: Double,info: Info): Hypothesis(p, info) {
                 BoxExp.Color.YELLOW -> box.yellow
             }
         }
-        pAH = mul / Math.pow(box.total.toDouble(), exp.list.size.toDouble())
+        val size = exp.list.size
+        pAH = mul / Math.pow(box.total.toDouble(), exp.list.size.toDouble())           //( (size) * (size - 1) * (size - 2) )
     }
 
     override fun toString(): String {
