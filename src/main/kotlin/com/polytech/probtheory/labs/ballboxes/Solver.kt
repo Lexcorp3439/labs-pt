@@ -33,14 +33,14 @@ class Solver(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property)
         val counter = mutableListOf<Int>()
         for (i in 0 until allHypos.first().size) {
             for (h in allHypos) {
-                if (h[i] > 0) {
+                if (h[i] > 0.00001) {
                     count++
                 }
             }
             counter.add(count)
             count = 0
         }
-        draw(counter, counter.size, "1.c")
+        draw(counter, 500, "1.c")
 
         // 2.a
         val psTeor = mutableListOf<Map<BoxExp.Color, Double>>()
@@ -74,12 +74,12 @@ class Solver(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property)
             countG += ex.list.count { it == BoxExp.Color.GREEN }
             countBl += ex.list.count { it == BoxExp.Color.BLUE }
             if (size < 500) {
-                drawer[0].add(countBl.toDouble() / (size + 1))
-                drawer[1].add(countG.toDouble() / (size + 1))
-                drawer[2].add(countR.toDouble() / (size + 1))
-                drawer[3].add(countW.toDouble() / (size + 1))
-                drawer[4].add(countB.toDouble() / (size + 1))
-                drawer[5].add(countY.toDouble() / (size + 1))
+                drawer[0].add(countBl.toDouble() / ((size + 1) * 3))
+                drawer[1].add(countG.toDouble() / ((size + 1) * 3))
+                drawer[2].add(countR.toDouble() / ((size + 1) * 3))
+                drawer[3].add(countW.toDouble() / ((size + 1) * 3))
+                drawer[4].add(countB.toDouble() / ((size + 1) * 3))
+                drawer[5].add(countY.toDouble() / ((size + 1) * 3))
             }
 
         }
@@ -114,7 +114,7 @@ class Solver(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property)
                 .build()
 
         val size = ys.first().size
-        val x = MutableList(size) { index -> index }
+        val x = MutableList(size) { index -> (index + 1) * 3 }
 
         for ((i, y) in ys.withIndex()) {
             chart.addSeries(getNeme(i), x, y)

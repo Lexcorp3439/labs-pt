@@ -28,7 +28,6 @@ abstract class Solver(
             for (h in hypo) {
                 h.changeP(pA)
             }
-
             allHypos.putHypos(hypo)
             sout(i, Type.FILE)
         }
@@ -173,7 +172,7 @@ abstract class Solver(
 
 //    Higher order functions
 
-    fun MutableList<MutableList<Double>>.putHypos(hypos: List<Hypothesis>) {
+    open fun MutableList<MutableList<Double>>.putHypos(hypos: List<Hypothesis>) {
         for ((i, h) in hypos.withIndex()) {
             this[i].add(h.p)
         }
