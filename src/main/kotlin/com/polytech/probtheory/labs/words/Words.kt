@@ -17,7 +17,7 @@ class Words : SolveBuilder {
     val lowCase = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"    // Строчные
     val voiced = "бвгджзйлмнр"                           // Звонкие
     val deaf = "кпстфхцш"                                // Глухие
-    val dividing = "ьъ"                                  // Разделительные
+    val dividing = "ьъ- "                                // Разделительные
     val vowels = "оиаыюяэёуе"                            // Гласные
     val consonants = "бвгджзйклмнпрстфхцчшщ"             // Соглласные
 
@@ -93,23 +93,23 @@ class Words : SolveBuilder {
 
     fun readFiles() {
         val j = this::class.java
-        val fs1 = FastScanner(j.getResourceAsStream("/words\\capitals.txt"))
-        val fs2 = FastScanner(j.getResourceAsStream("/words\\cities_rus.txt"))
-        val fs3 = FastScanner(j.getResourceAsStream("/words\\countries.txt"))
-        val fs4 = FastScanner(j.getResourceAsStream("/words\\names_all.txt"))
-        val fs5 = FastScanner(j.getResourceAsStream("/words\\rivers.txt"))
-        val fs6 = FastScanner(j.getResourceAsStream("/words\\russian_nouns.txt"))
-        readFile(fs1, 207)
-        readFile(fs2, 1191)
+//        val fs1 = FastScanner(j.getResourceAsStream("/words\\capitals.txt"))
+//        val fs2 = FastScanner(j.getResourceAsStream("/words\\cities_rus.txt"))
+        val fs3 = Scanner(j.getResourceAsStream("/words\\countries.txt"))
+//        val fs4 = FastScanner(j.getResourceAsStream("/words\\names_all.txt"))
+//        val fs5 = FastScanner(j.getResourceAsStream("/words\\rivers.txt"))
+//        val fs6 = FastScanner(j.getResourceAsStream("/words\\russian_nouns.txt"))
+//        readFile(fs1, 207)
+//        readFile(fs2, 1191)
         readFile(fs3, 231)
-        readFile(fs4, 262)
-        readFile(fs5, 232)
-        readFile(fs6, 51301)
+//        readFile(fs4, 262)
+//        readFile(fs5, 232)
+//        readFile(fs6, 51301)
     }
 
-    fun readFile(scanner: FastScanner, rN: Int) {
+    fun readFile(scanner: Scanner, rN: Int) {
         for (i in 0 until rN) {
-            words.add(Word(scanner.next().toCharArray()))
+            words.add(Word(scanner.nextLine().toCharArray()))
         }
     }
 }
