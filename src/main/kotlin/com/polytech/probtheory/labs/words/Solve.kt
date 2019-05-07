@@ -11,7 +11,7 @@ import java.util.*
 
 class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) : Solver(hypo, exps, property) {
     override fun run() {
-//        println(exps.size)
+        println(exps.size)
 //        println(hypo.size)
 //        // 1.a
 //        val allHypos = countPostNew()
@@ -50,10 +50,23 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
 
         // 2.a
         val newHypo = secondHypo()
-        val result = secondPost(newHypo)
-        for (r in result) {
-//            println("char = ${r.keys} --- list = ${r.values} \n")
+        val result1 = secondPost(newHypo.first(), 1)
+//        for ((i, r) in result1['у']!!.withIndex()) {
+//            println(i)
+//            println(r)
+//            println("\n")
+//        }
+//        println(result1['Д'].toString())
+        for (r in result1) {
+            println("char = ${r.key} --- list = ${r.value.subList(8060, r.value.size)} \n")
         }
+
+//        for (n in newHypo) {
+//            val result = secondPost(n, 0)
+//            for (r in result) {
+//                println("char = ${r.key} --- list = ${r.value} \n")
+//            }
+//        }
 
     }
 
@@ -70,7 +83,7 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
         }
 
         for ((i, exp) in exps.withIndex()) {
-            println("$i")
+//            println("$i")
             changeAllPAH(exp)
             changePA()
             for (hw in hypos) {
@@ -106,29 +119,33 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
         return hypos
     }
 
-    fun secondPost( hypoS: List<List<LeterHypo>>) :List<Map<Char, List<Double>>> {
-        val hypos = hypoS
-        val allHypos = List(hypoS.size) {index -> hypos[index].toMapS() }
+    fun secondPost(hypoS: List<Hypothesis>, index: Int): Map<Char, List<Double>> {
+        val hypos = hypoS.toMapS()
+        val allHypos = mutableMapOf<Char, MutableList<Double>>()
+
+        for (h in hypoS) {
+            allHypos[(h.info as CharH).c] = mutableListOf()
+            allHypos[h.info.c]?.add(h.p)
+        }
 
         for ((i, exp) in exps.withIndex()) {
             println("$i")
-            changeAllPAH(exp)
-            changePA()
-            for ((ind, hw) in hypos.withIndex()) {
-                for (h in hw) {
-                    h.changeP(pA)
-                    allHypos[ind][(h.info as CharH).c]?.add(h.p)
+            val e = exp as Letter
+            if (e.e.first > -1 && e.e.first == index || e.e.first < 0) {
+                changeAllPAH(exp)
+                changePA()
+                if (i < 32) println(pA)
+                for (hw in hypos) {
+                    if (allHypos.containsKey((hw.value.info as CharH).c)) {
+                        when {
+                            hw.value.p > 0.0 -> {
+                                hw.value.changeP(pA)
+                                allHypos[hw.key]?.add(hw.value.p)
+                            }
+                            else -> allHypos[hw.key]?.add(hw.value.p)
+                        }
+                    }
                 }
-//                if (allHypos.containsKey((hw.value.info as Word).word)) {
-//                    when {
-//                        hw.value.p > 0.0 -> {
-//                            hw.value.changeP(pA)
-//                            allHypos[hw.key]?.add(hw.value.p)
-//                        }
-//                        allHypos.size > 231 -> allHypos.remove(hw.key)
-//                        else -> allHypos[hw.key]?.add(hw.value.p)
-//                    }
-//                }
             }
         }
         return allHypos
@@ -162,10 +179,24 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
         SwingWrapper(chart).displayChart()
     }
 
+    fun zeroPAH() {
+        for (h in hypo) {
+            h.pAH = 0.0
+        }
+    }
+
     fun List<Hypothesis>.toMapH(): MutableMap<CharArray, Hypothesis> {
         val map = mutableMapOf<CharArray, Hypothesis>()
         for (h in this) {
             map[(h.info as Word).word] = h
+        }
+        return map
+    }
+
+    fun List<Hypothesis>.toMapS(): MutableMap<Char, Hypothesis> {
+        val map = mutableMapOf<Char, Hypothesis>()
+        for (h in this) {
+            map[(h.info as CharH).c] = h
         }
         return map
     }
@@ -178,13 +209,13 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
 //        return map
 //    }
 
-    fun List<LeterHypo>.toMapS(): Map<Char, MutableList<Double>> {
-        val map = mutableMapOf<Char, MutableList<Double>>()
-        for (h in this) {
-            val list = mutableListOf<Double>()
-            list.add(h.p)
-            map[(h.info as CharH).c] = list
-        }
-        return map
-    }
+//    fun List<LeterHypo>.toMapS(): Map<Char, MutableList<Double>> {
+//        val map = mutableMapOf<Char, MutableList<Double>>()
+//        for (h in this) {
+//            val list = mutableListOf<Double>()
+//            list.add(h.p)
+//            map[(h.info as CharH).c] = list
+//        }
+//        return map
+//    }
 }

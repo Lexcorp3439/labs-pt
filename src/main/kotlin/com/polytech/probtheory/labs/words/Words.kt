@@ -66,8 +66,8 @@ class Words : SolveBuilder {
         } else {
             for (i in 3 until line.size) {
                 abs = when (line[i]) {
-                    "заглавная" -> deleteBy(abs, upCase)
-                    "строчная" -> deleteBy(abs, lowCase)
+                    "заглавная" -> deleteBy(abs, upCase, true)
+                    "строчная" -> deleteBy(abs, lowCase, true)
                     "гласная" -> deleteBy(abs, vowels)
                     "согласная" -> deleteBy(abs, consonants)
                     "глухая" -> deleteBy(abs, deaf)
@@ -81,10 +81,11 @@ class Words : SolveBuilder {
         return abs
     }
 
-    private fun deleteBy(cur: CharArray, del: CharSequence): CharArray {
+    private fun deleteBy(cur: CharArray, del: CharSequence, up: Boolean = false): CharArray {
         val res = StringBuilder()
         for (c in cur) {
-            if (c in del) {
+            val cc = if (up) c else c.toLowerCase()
+            if (cc in del) {
                 res.append(c)
             }
         }
