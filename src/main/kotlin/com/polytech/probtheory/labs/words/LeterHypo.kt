@@ -35,7 +35,7 @@ class LeterHypo(p: Double, info: Info) : Hypothesis(p, info) {
                 e.e.first < 0 && let.toLowerCase() != e.e.second.first() -> 23.0 / (24 * s)
                 e.e.first > -1 && e.e.second.contains(let) -> {
 //                    s = e.e.second.size
-                    1.0 / e.e.second.size
+                    1.0
                 }
                 else -> 0.0
             }

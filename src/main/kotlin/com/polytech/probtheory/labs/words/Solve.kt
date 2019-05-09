@@ -24,39 +24,39 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
     override fun run() {
 
         val oldHypo = hypo
-//        // 1.a
-//        val allHypos = countPostNew()
-//        drawHypo(allHypos)
-//
-//        // 1.b
-//        var max = 0.0
-//        var key = CharArray(1)
-//        for ((k, v) in allHypos) {
-//            if (v.last() > max) {
-//                key = k
-//                max = v.last()
-//            }
-//            if (max == 1.0) {
-//                break
-//            }
-//        }
-//        draw(allHypos[key] ?: error(""), 10, "1.b", Arrays.toString(key))
-//
-//        // 1.c
-//        var count = 0
-//        val counter = mutableListOf<Int>()
-//        for (i in 0 until (allHypos[key]?.size ?: 0)) {
-//            for ((k, v) in allHypos) {
-//                if (v[i] > 0.00001) {
-//                    count++
-//                    println("i=$i + ${Arrays.toString(k)}")
-//                }
-//            }
-//            println("\n")
-//            counter.add(count)
-//            count = 0
-//        }
-//        draw(counter, 10, "1.c")
+        // 1.a
+        val allHypos = countPostNew()
+        drawHypo(allHypos)
+
+        // 1.b
+        var max = 0.0
+        var key = CharArray(1)
+        for ((k, v) in allHypos) {
+            if (v.last() > max) {
+                key = k
+                max = v.last()
+            }
+            if (max == 1.0) {
+                break
+            }
+        }
+        draw(allHypos[key] ?: error(""), 10, "1.b", Arrays.toString(key))
+
+        // 1.c
+        var count = 0
+        val counter = mutableListOf<Int>()
+        for (i in 0 until (allHypos[key]?.size ?: 0)) {
+            for ((k, v) in allHypos) {
+                if (v[i] > 0.00001) {
+                    count++
+                    println("i=$i + ${Arrays.toString(k)}")
+                }
+            }
+            println("\n")
+            counter.add(count)
+            count = 0
+        }
+        draw(counter, 10, "1.c")
 
         // 2.a - b
         val all = mutableListOf<Map<Char, List<Double>>>()
@@ -65,9 +65,9 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
             all.add(result)
         }
         print2ab(all)
-//        for (i in 0 until 24) {
-//            drawSecond(all[i], i + 1)
-//        }
+        for (i in 0 until 24) {
+            drawSecond(all[i], i + 1)
+        }
 
         // 2.c
         for (c in characters) {
@@ -80,18 +80,18 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
             vowels += if (c.vowels) 1 else 0
         }
 
-//        for (i in 0 until 24) {
-//            when {
-//                characters[i].voiced -> printRes(all[i], voiced)
-//                characters[i].deaf -> printRes(all[i], deaf)
-//                characters[i].dividing -> printRes(all[i], dividing)
-//                characters[i].vowels -> printRes(all[i], vowels)
-//            }
-//        }
+        for (i in 0 until 24) {
+            when {
+                characters[i].voiced -> printRes(all[i], voiced)
+                characters[i].deaf -> printRes(all[i], deaf)
+                characters[i].dividing -> printRes(all[i], dividing)
+                characters[i].vowels -> printRes(all[i], vowels)
+            }
+        }
 
 
 //        3.a + 3.b
-        val psExp = generatePsExp()                                 // генерация экспериментального профиля
+        val psExp = generatePsExp()                         // генерация экспериментального профиля
 //        3.c
         val tClasses =
             generatePsTeorClass(characters, oldHypo)        // генерация теоретического профиля с фильтрацией по классам
@@ -166,17 +166,6 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
 
     val all = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя-_"
 
-    //    fun secondHypo(): List<List<LeterHypo>> {
-//        val hypos = mutableListOf<List<LeterHypo>>()
-//        val p = 1.0 / all.length
-//
-////        hypo = defaultH                         // изменяем изначальный hypo
-//        for (i in 0..23) {
-//            hypos.add(createDef())
-//        }
-//        println(hypos)
-//        return hypos
-//    }
     fun createDef(): List<LeterHypo> {
         val p = 1.0 / all.length
 
@@ -237,11 +226,6 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
                 .xAxisTitle("exp").yAxisTitle("p")
                 .build()
 
-//        val stop = if (property.stopDraw > map.first().size) {
-//            map.first().size
-//        } else {
-//            property.stopDraw
-//        }
         val stop = property.stopDraw
 
         val x = MutableList(stop) { index -> index }
@@ -265,13 +249,7 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
                 .xAxisTitle("exp").yAxisTitle("p")
                 .build()
 
-//        val stop = if (property.stopDraw > map.first().size) {
-//            map.first().size
-//        } else {
-//            property.stopDraw
-//        }
-//        val stop = map.values.first().size
-        val stop = 300
+        val stop = 1000
         val x = List(stop) { ind -> ind }
 
         val mapS = map.toList().sortedByDescending { (_, list) -> list.last() }.toMap()
@@ -318,10 +296,6 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
                     }
                 }
             }
-//        for ((i, y) in ys.withIndex()) {
-//            chart.addSeries(chars[i].toString(), x, y)
-//        }
-
             SwingWrapper(chart).displayChart()
         }
     }
@@ -342,25 +316,6 @@ class Solve(hypo: List<Hypothesis>, exps: List<Experiment>, property: Property) 
         }
         return map
     }
-
-//    fun List<LeterHypo>.toMapS(): Map<Char, LeterHypo> {
-//        val map = mutableMapOf<Char, LeterHypo>()
-//        for (h in this) {
-//            map[(h.info as CharH).c] = h
-//        }
-//        return map
-//    }
-
-//    fun List<LeterHypo>.toMapS(): Map<Char, MutableList<Double>> {
-//        val map = mutableMapOf<Char, MutableList<Double>>()
-//        for (h in this) {
-//            val list = mutableListOf<Double>()
-//            list.add(h.p)
-//            map[(h.info as CharH).c] = list
-//        }
-//        return map
-//    }
-
 
     val upCaseS = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ"       // Заглавные
     val lowCaseS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"    // Строчные

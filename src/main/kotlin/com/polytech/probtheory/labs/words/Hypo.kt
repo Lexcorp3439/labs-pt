@@ -16,7 +16,6 @@ class Hypo(p: Double, info: Info) : Hypothesis(p, info) {
 
     override fun changePAH(exp: Experiment) {
         val e = exp as Letter
-//        println(e.toString())
         if (p != 0.0) {
             pAH = when {
                 e.e.first < 0 -> {
@@ -42,6 +41,4 @@ class Hypo(p: Double, info: Info) : Hypothesis(p, info) {
     override fun toString(): String {
         return "Hypo(word=${Arrays.toString(word)})"
     }
-
-
 }
