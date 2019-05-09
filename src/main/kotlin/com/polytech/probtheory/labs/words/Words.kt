@@ -17,7 +17,7 @@ class Words : SolveBuilder {
     val lowCase = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"    // Строчные
     val voiced = "бвгджзйлмнр"                           // Звонкие
     val deaf = "кпстфхцш"                                // Глухие
-    val dividing = "ьъ- "                                // Разделительные
+    val dividing = "ьъ-_"                                // Разделительные
     val vowels = "оиаыюяэёуе"                            // Гласные
     val consonants = "бвгджзйклмнпрстфхцчшщ"             // Соглласные
 
@@ -47,7 +47,12 @@ class Words : SolveBuilder {
             val line = scn.nextLine().split(" ")
             val place = readPlace(line[2])
             val chars = readInfo(line)
-            list.add(Letter(place to chars))
+            val let = Letter(place to chars)
+            if (line.size > 3) {
+                readType(line, let)
+            }
+            out.write("$let  \n")
+            list.add(let)
         }
     }
 
@@ -60,7 +65,7 @@ class Words : SolveBuilder {
     }
 
     private fun readInfo(line: List<String>): CharArray {
-        var abs = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".toCharArray()
+        var abs = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ-_".toCharArray()
         if (line.size == 3) {
             abs = line.last().replace("\"", "").toCharArray()
         } else {
@@ -73,12 +78,27 @@ class Words : SolveBuilder {
                     "глухая" -> deleteBy(abs, deaf)
                     "звонкая" -> deleteBy(abs, voiced)
                     "разделительная" -> deleteBy(abs, dividing)
-                    else -> line[i].toCharArray()
+                    else -> {
+                        line[i].toCharArray()
+                    }
                 }
             }
         }
-        out.write("${Arrays.toString(abs)}  \n")
         return abs
+    }
+
+    private fun readType(line: List<String>, let: Letter) {
+        for (i in 3 until line.size) {
+            when (line[i]) {
+                "заглавная" -> let.upCase = true
+                "строчная" -> let.lowCase = true
+                "гласная" -> let.vowels = true
+                "согласная" -> let.consonants = true
+                "глухая" -> let.deaf = true
+                "звонкая" -> let.voiced = true
+                "разделительная" -> let.dividing = true
+            }
+        }
     }
 
     private fun deleteBy(cur: CharArray, del: CharSequence, up: Boolean = false): CharArray {
@@ -110,7 +130,7 @@ class Words : SolveBuilder {
 
     fun readFile(scanner: Scanner, rN: Int) {
         for (i in 0 until rN) {
-            words.add(Word(scanner.nextLine().toCharArray()))
+            words.add(Word(scanner.nextLine().replace(" ", "_").toCharArray()))
         }
     }
 }
